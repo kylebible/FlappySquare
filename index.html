@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Flappy Square</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="container">
+      <h1 id="score"></h1>
+      <h1 id="max"></h1>
+      <div id="pipes">
+
+      </div>
+      <div id="space">
+        <div id='space1'></div>
+      </div>
+
+      <div id="square">
+      </div>
+    </div>
+
+  <script type="text/javascript">
+    var square = {x:100, y:50}
+
+    function displaySquare() {
+      document.getElementById('square').style['top'] = square.y + "px";
+      document.getElementById('square').style['left'] = square.x + "px";
+    }
+
+
+    function displayPipes() {
+      var output= ''
+      for (var i=0;i<pipes.length;i++) {
+        output += "<div class='pipe' style='top:0px; left:"+pipes[i].x+"px; height:"+pipes[i].height+"px; width:100px;'></div>"
+
+    }
+      document.getElementById('pipes').innerHTML = output
+    }
+
+    var pipes = []
+
+    function generatePipes() {
+      for(var i=1;i<=6;i++){
+      pipes.push({x:i*300+250, height:700})
+    }
+    }
+
+    function randomBetween(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+    var space=[]
+
+    function generateSpace() {
+      for(var i=1;i<=6;i++){
+      space.push({x:i*300+250, y:randomBetween(150,300), height:randomBetween(250,350)})
+    }
+    }
+
+
+    function generateOneSpace() {
+      space.push({x:1450, y:randomBetween(150,300), height:randomBetween(250,350)})
+    }
+
+    function generateOnePipe() {
+      pipes.push({x:1450, height:700})
+    }
+
+
+    function displaySpace() {
+      var output= ''
+      for (var i=0;i<space.length;i++) {
+        output += "<div class='space' id='space"+i+"' style='top:"+space[i].y+"px; left:"+space[i].x+"px; height:"+space[i].height+"px; width:100px;'></div>"
+
+    }
+      document.getElementById('space').innerHTML = output
+    }
+
+    var pipe_scroll=4
+    function movePipes() {
+      for (var i=0;i<pipes.length;i++) {
+        pipes[i].x -=pipe_scroll
+        space[i].x -=pipe_scroll
+        if (pipes[i].x <-400) {
+          generateOnePipe()
+          generateOneSpace()
+          pipes.shift()
+          space.shift()
+        }
+      }
+      pipe_scroll+=.001
+    }
+
+var pipeMovement= setInterval(movePipes,10)
+
+  function reset() {
+    square.y=50
+    square_fall=1.6
+    pipe_scroll=4
+      pipes = []
+      space = []
+      generateSpace()
+      generatePipes()
+      score=0
+  }
+
+  function maxScore() {
+    if (score>max) {
+      max=score
+    }
+    document.getElementById('max').innerHTML= "Top Score: "+max
+  }
+
+
+    function gameLoop() {
+      displaySquare()
+      displayPipes()
+      displaySpace()
+      maxScore()
+      // collisionDetector()
+        }
+
+    var square_fall=1.6
+    var square_jump=2
+
+    var downGrav = setInterval(gravity,1)
+
+    function gravity() {
+      square.y+=square_fall
+      if (square_fall<=5) {
+      square_fall=Math.pow(square_fall,1.01)}
+      if (square.y>750||square.y<0) {
+        reset()
+      }
+    }
+
+    var count = 1
+    var square_jump=2
+    function jump() {
+      square.y-=square_jump
+      square_jump=Math.pow(square_jump,1.02)
+      if (square_jump>=4) {
+        clearInterval(jumpLoop)
+        downGrav = setInterval(gravity,1)
+        square_jump=2
+        square_fall=1.8
+      }
+    }
+    var jumpLoop = setInterval(jump, 1)
+    clearInterval(jumpLoop)
+
+    document.onkeydown = function(a) {
+      if (a.key=="ArrowUp") {
+        clearInterval(downGrav)
+        jumpLoop = setInterval(jump,1)
+        }
+      }
+
+      generateSpace()
+      generatePipes()
+
+
+
+    function collisionDetector() {
+      var squarePos = document.getElementById('square').getBoundingClientRect();
+      var spacePos = document.getElementById("space1").getBoundingClientRect();
+      if((Math.abs(squarePos.top<spacePos.top)||Math.abs(squarePos.bottom>spacePos.bottom))&&Math.abs(squarePos.right>spacePos.left))
+      {console.log("hit!")
+      reset()}
+    }
+
+
+    setInterval(collisionDetector,10)
+
+    var score = 0
+    var max = 0
+
+    function scoreUp() {
+      score++
+      document.getElementById('score').innerHTML= "Score: "+score
+    }
+
+
+
+    setInterval(scoreUp,100)
+
+
+
+    var loop = setInterval(gameLoop, 10)
+
+
+
+  </script>
+  </body>
+</html>

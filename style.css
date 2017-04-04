@@ -1,0 +1,36 @@
+* {
+  margin:0px;
+  padding:0px;
+}
+
+#container {
+  background-color: rgb(218, 101, 70);
+  height: 700px;
+  width: 1500px;
+}
+
+#square {
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  background-color: rgb(41, 244, 171);
+}
+
+#score, #max {
+  position:absolute;
+  z-index: 5
+}
+
+#max{
+  top:60px;
+}
+
+.space {
+  background-color: rgb(218, 101, 70);
+  position: absolute;
+}
+
+.pipe {
+  background-color: rgb(124, 94, 237);
+  position: absolute;
+}
